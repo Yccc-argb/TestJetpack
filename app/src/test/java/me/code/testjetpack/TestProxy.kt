@@ -21,10 +21,13 @@ class TestProxy {
 
     @Test
     fun testDynamicProxy(){
-        val instance = ProxyUtil.getInstance(Cat())
+        val ani : Animal = Cat()
+        val instance = ProxyUtil.getInstance(ani)
         val cat = instance as Animal
         cat.animalVoice()
         cat.animalEat()
+
+        println(cat.javaClass.name)
     }
 
 }

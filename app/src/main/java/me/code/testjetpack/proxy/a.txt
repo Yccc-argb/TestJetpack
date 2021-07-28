@@ -7,3 +7,8 @@
 代理类和被代理类实现同一接口,通过代理类调用重写的接口方法,来去调用被代理类的原始方法
 ProxyA/A,都实现InterfaceA,ProxyA内部持有A的对象.外部需要调用A的方法时候,实际通过
 ProxyA的重写接口方法调用
+
+动态代理
+通过代理类来实现对象的的方法调用,并且是在程序运行时根据需要动态创建代理对象目标
+创建类A实现InvocationHandler接口,重写invoke方法
+创建类,通过Proxy.newProxyInstance将目标对象与动态代理A关联
