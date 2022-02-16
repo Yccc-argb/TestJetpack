@@ -1,14 +1,19 @@
 package me.code.testjetpack.proxy
 
+import java.lang.reflect.InvocationHandler
+import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 
-object ProxyUtil {
+class ProxyUtil {
 
+    companion object {
+        @JvmStatic
+        val  instance by lazy { ProxyUtil() }
+    }
 
     //获取代理对象实例
     fun getInstance(any: Any) : Any{
-        val myProxy = MyProxy()
-        myProxy.original = any
+        val myProxy = MyProxy(any)
 
         /**
          * any                         被代理对象
@@ -22,4 +27,30 @@ object ProxyUtil {
         return Proxy.newProxyInstance(classLoader,interfaces,myProxy)
     }
 
+
+//    fun <T> getInstance(service: Class<T>): T {
+//
+//        return Proxy.newProxyInstance(
+//            service.classLoader,
+//            service.interfaces,
+//            object : InvocationHandler {
+//                override fun invoke(any: Any?, method: Method, args: Array<out Any>?): Any {
+//
+////                    if (method?.declaringClass == Any::class.java) {
+////                        return method.invoke(this, args)
+////                    }
+//                    return LoadService(method).invoke(args)
+//
+//                }
+//            }) as T
+//    }
+
+    fun <T> create(service: Class<T>): T {
+        return Proxy.newProxyInstance(
+            service.classLoader,
+            arrayOf(service)
+        ) { proxy, method, args ->
+            return@newProxyInstance LoadService(method).invoke(args ?: arrayOfNulls<Any>(0))
+        } as T
+    }
 }

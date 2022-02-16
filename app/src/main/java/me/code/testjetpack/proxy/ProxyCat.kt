@@ -1,6 +1,6 @@
 package me.code.testjetpack.proxy
 
-class ProxyCat(private val cat: Cat) : Animal {
+class ProxyCat(private val cat: Animal) : Animal {
 
 
 
