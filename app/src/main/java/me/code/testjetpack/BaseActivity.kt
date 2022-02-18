@@ -25,10 +25,13 @@ abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
             try {
                 val type = this.javaClass.genericSuperclass
                 if (type is ParameterizedType) {
+                    //对应生成在build/generated/data_binding_base_class_source_out目录下
+                    //得到xxxBinding字节对象
                     val clazz = type.actualTypeArguments[0] as Class<T>
+                    //获取xxxBinding的inflate方法
                     val method = clazz.getMethod("inflate", LayoutInflater::class.java)
-                    //反射执行xxxbinding.inflate方法
-                    binding = method.invoke(null, layoutInflater) as T
+                    //执行xxxBinding.inflate方法获取xxxBing对象实例
+                    binding = method.invoke(null, getLayoutInflater()) as T
                 }
 
                 setContentView(binding.root)
