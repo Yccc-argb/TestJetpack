@@ -1,6 +1,5 @@
 package cn.jzx91.lib_core.net
 
-import java.nio.file.Path
 
 interface IHttpApi {
 

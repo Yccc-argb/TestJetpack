@@ -1,11 +1,9 @@
-package me.code.testjetpack
+package cn.jzx91.lib_core.base
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import me.code.testjetpack.databinding.ActivityBaseBinding
 import java.lang.reflect.ParameterizedType
 import kotlin.system.measureTimeMillis
 

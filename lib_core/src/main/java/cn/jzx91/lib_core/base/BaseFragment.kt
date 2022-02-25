@@ -1,4 +1,4 @@
-package me.code.testjetpack
+package cn.jzx91.lib_core.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
