@@ -13,6 +13,8 @@ abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
 
     protected lateinit var binding : T
 
+    protected val TAG = this::class.java.simpleName
+
 //    protected var baseBinding : ActivityBaseBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -12,6 +12,8 @@ abstract class BaseFragment<T : ViewBinding> : Fragment(){
 
     protected lateinit var binding: T
 
+    protected val  TAG = this::class.simpleName
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +29,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment(){
                 ViewGroup::class.java,
                 Boolean::class.java
             )
-            binding = method.invoke(null, container, false) as T
+            binding = method.invoke(null,inflater, container, false) as T
 
 
         }

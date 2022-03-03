@@ -1,6 +1,7 @@
 package me.code.testjetpack
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -11,68 +12,100 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import cn.jzx91.lib_core.base.BaseActivity
+import cn.jzx91.lib_core.base.BaseFragment
 import me.code.testjetpack.databinding.ActivityMainBinding
+import me.code.testjetpack.modle.UserBean
+import me.code.testjetpack.modle.UserViewModel
+import me.code.testjetpack.ui.TestActivity
+import me.code.testjetpack.ui.TestOneFragment
+import me.code.testjetpack.ui.TestTwoFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    lateinit var popupWindow : PopupWindow
-
+    lateinit var showF : BaseFragment<ViewBinding>
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun initView() {
 
+        val userModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
-        binding.button1.setOnClickListener{
-            val contentView = layoutInflater.inflate(R.layout.layout_pop, null)
-            popupWindow = PopupWindow(
-                contentView,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            popupWindow.isOutsideTouchable = true
-            popupWindow.isFocusable = false
-//            popupWindow.showAsDropDown(binding.button1,-binding.button1.width/2,0)
-            popupWindow.showAtLocation(it,Gravity.CENTER_HORIZONTAL,0,0)
-            val tvTest = contentView.findViewById<TextView>(R.id.tvTest)
-            tvTest.setOnClickListener {
-                popupWindow.dismiss()
+        userModel.setUser(UserBean("xxxxx",14,System.currentTimeMillis()))
+            initFragment(TestOneFragment.getTag())
+
+            binding.button1.setOnClickListener {
+                val value = userModel.getUsers().value
+                value?.time = System.currentTimeMillis()
+                userModel.setUser(value!!)
+//                userModel?.setUser(UserBean("xxxxx",14,System.currentTimeMillis()))
+
+
+//
             }
 
-//            popupWindow.setTouchInterceptor { v, event ->
-//                if (event.action == MotionEvent.ACTION_OUTSIDE && !popupWindow.isFocusable){
-//                    val judgePointZoom =
-//                        judgePointZoom(binding.button1, event.rawX.toInt(), event.rawY.toInt())
-//                    if (judgePointZoom) popupWindow.dismiss()
-//                    return@setTouchInterceptor judgePointZoom
-//                }else {
-//                    return@setTouchInterceptor  false
-//                }
-//            }
-
-            contentView.setOnKeyListener(object: View.OnKeyListener{
-                override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-                    Log.i("KEYCODE_BACK","-------$keyCode-------")
-                    when(keyCode){
-                        KeyEvent.KEYCODE_BACK->{
-
-                            Toast.makeText(this@MainActivity,"KEYCODE_BACK~",Toast.LENGTH_LONG).show()
-                            popupWindow.dismiss()
-                            return true
-
-                        }
-
-                    }
-                    return true
-                }
-            })
-
-        }
         binding.button2.setOnClickListener {
-            Toast.makeText(this,"button被点击了~",Toast.LENGTH_LONG).show()
+           replaceF()
+//            val intent = Intent(this,TestActivity::class.java)
+//            startActivity(intent)
         }
 
+    }
+
+
+    private fun  showF(){
+        val bt = supportFragmentManager.beginTransaction()
+        if (showF.tag == TestOneFragment.getTag()){
+            var f =
+                supportFragmentManager.findFragmentByTag(TestTwoFragment.getTag())
+            if (f == null){
+                f = TestTwoFragment() as BaseFragment<ViewBinding>
+                bt.add(binding.flContainer.id,f)
+            }
+            bt.hide(showF).show(f).commit()
+            showF = f as BaseFragment<ViewBinding>
+        }else {
+            var f =
+                supportFragmentManager.findFragmentByTag(TestOneFragment.getTag())
+            if (f == null){
+                f = TestOneFragment() as BaseFragment<ViewBinding>
+                bt.add(binding.flContainer.id,f)
+            }
+            bt.hide(showF).show(f).commit()
+            showF = f as BaseFragment<ViewBinding>
+        }
+    }
+
+    private fun replaceF(){
+        val bt = supportFragmentManager.beginTransaction()
+        if (showF.tag == TestOneFragment.getTag()){
+            var f =
+                supportFragmentManager.findFragmentByTag(TestTwoFragment.getTag())
+            if (f == null){
+                f = TestTwoFragment() as BaseFragment<ViewBinding>
+
+            }
+            bt.replace(binding.flContainer.id,f,TestTwoFragment.getTag()).commit()
+            showF = f as BaseFragment<ViewBinding>
+        }else {
+            var f =
+                supportFragmentManager.findFragmentByTag(TestOneFragment.getTag())
+            if (f == null){
+                f = TestOneFragment() as BaseFragment<ViewBinding>
+            }
+            bt.replace(binding.flContainer.id,f,TestOneFragment.getTag()).commit()
+            showF = f as BaseFragment<ViewBinding>
+        }
+    }
+
+    private fun initFragment(tag:String){
+        showF = TestOneFragment() as BaseFragment<ViewBinding>
+        supportFragmentManager.beginTransaction()
+            .add(binding.flContainer.id,showF,tag)
+            .commit()
 
 
     }
